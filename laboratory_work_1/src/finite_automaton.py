@@ -13,5 +13,11 @@ class FiniteAutomaton:
         for c in inputString:
             if c not in self.sigma:
                 return False
-            if c in 
+            for transition in self.delta[currentState]:
+                if c == transition[0]:
+                    if len(transition) == 2:
+                        currentState = transition[1]
+                        break
+                    else:
+                        currentState = transition[0]
         return currentState in self.f
