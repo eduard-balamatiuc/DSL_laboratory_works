@@ -22,7 +22,7 @@ class Grammar:
         q0 = self.S
         delta = {}
         for key in self.P.keys():
-            delta[key] = [(item[0], item) for item in self.P[key]]
+            delta[key] = [(item[0],) if len(item) == 1 else (item[0], item[1]) for item in self.P[key]]
         values = [item for sublist in self.P.values() for item in sublist]
         f = [item for item in values if len(set([key for key in self.P.keys()])-set(item)) == len(set([key for key in self.P.keys()]))]
         return FiniteAutomaton(q, sigma, delta, q0, f)
