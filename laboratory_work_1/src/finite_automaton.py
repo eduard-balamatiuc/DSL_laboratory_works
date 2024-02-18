@@ -15,8 +15,8 @@ class FiniteAutomaton:
                 return False
             for transition in self.delta[currentState]:
                 if c == transition[0]:
-                    if len(transition[1]) == 2:
-                        currentState = transition[1][1]
+                    if len(transition) == 2:
+                        currentState = transition[1]
                         break
                     else:
                         currentState = transition[0]
