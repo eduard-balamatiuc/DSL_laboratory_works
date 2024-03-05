@@ -26,4 +26,4 @@ class Grammar:
         values = [item for sublist in self.P.values() for item in sublist]
         f = [item for item in values if len(set([key for key in self.P.keys()])-set(item)) == len(set([key for key in self.P.keys()]))]
         return FiniteAutomaton(q, sigma, delta, q0, f)
-    
+
