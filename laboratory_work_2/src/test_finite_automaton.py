@@ -120,5 +120,59 @@ class TestIsDeterministic(unittest.TestCase):
         self.assertFalse(test_finite_automaton.is_deterministic())
 
 
+class TestToDfa(unittest.TestCase):
+    def test_to_dfa_based_on_first_lab(self):
+        q={"S", "Q", "P"}
+        sigma={"e", "a", "b", "d", "f", "c"}
+        delta={
+            "S": [("a", "P"), ("b", "Q")],
+            "P": [("b", "P"), ("c", "P"), ("d", "Q"), ("e",)],
+            "Q": [("e", "Q"), ("f", "Q"), ("a",)]
+        }
+        q0="S"
+        f=["e", "a"]
+        test_finite_automaton = FiniteAutomaton(
+            q=q,
+            sigma=sigma,
+            delta=delta,
+            q0=q0,
+            f=f,
+        )
+        self.assertEqual(test_finite_automaton.to_dfa(), test_finite_automaton)
+
+    def test_to_dfa_based_on_second_lab(self):
+        q = {"0", "1", "2", "3"}
+        sigma = {"a", "c", "b"}
+        delta = {
+            "0": [("a", "0"), ("a", "1")],
+            "1": [("c", "1"), ("b", "2")],
+            "2": [("b", "3")],
+            "3": [("a", "1")]
+        }
+        q0 = "0"
+        f = ["2"]
+        test_finite_automaton = FiniteAutomaton(
+            q=q,
+            sigma=sigma,
+            delta=delta,
+            q0=q0,
+            f=f,
+        )
+        expcted_finite_automaton = FiniteAutomaton(
+            q={"0", "1", "2", "3", "4"},
+            sigma={"a", "c", "b"},
+            delta={
+                '0': [('a', '1')],
+                '1': [('b', '2'), ('a', '1'), ('c', '3')],
+                '3': [('b', '2'), ('c', '3')],
+                '2': [('b', '4')],
+                '4': [('a', '3')],
+            },
+            q0="0",
+            f=["2"]
+        )
+        self.assertEqual(test_finite_automaton.to_dfa().to_dict(), expcted_finite_automaton.to_dict())
+
+
 if __name__=="__main__":
     unittest.main()
