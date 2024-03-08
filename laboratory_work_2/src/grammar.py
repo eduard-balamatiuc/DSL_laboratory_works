@@ -4,6 +4,9 @@ from finite_automaton import FiniteAutomaton
 
 
 class GrammarTypology(str, Enum):
+    """Enum class for the different types of grammars. 
+    The values are the same as the ones used in the Chomsky hierarchy based on the LFPC Guide.
+    """
     RECURSIVELY_ENUMERABLE_GRAMMAR = "type_0"
     CONTEXT_SENSITIVE_GRAMMAR = "type_1"
     CONTEXT_FREE_GRAMMAR = "type_2"
@@ -12,6 +15,7 @@ class GrammarTypology(str, Enum):
 
 
 class Grammar:
+    """Class representing a generalised grammar."""
     def __init__(self, VN, VT, P, S="S"):
         self.VN = VN
         self.VT = VT
@@ -20,9 +24,11 @@ class Grammar:
         self.type = self.compute_type()  # Compute the grammar type during initialization
 
     def __str__(self):
+        """Printable representation of the grammar."""
         return f"{self.type} grammar: VN={self.VN}, VT={self.VT}, P={self.P}, S={self.S}"
 
     def generate_string(self):
+        """Generates a random string from the grammar."""
         string = self.S
         while any(v in string for v in self.VN):
             for v in string:
@@ -31,6 +37,7 @@ class Grammar:
         return string
 
     def to_finite_automaton(self):
+        """Function to convert a grammar to a finite automaton."""
         q = self.VN
         sigma = self.VT
         q0 = self.S
@@ -42,6 +49,7 @@ class Grammar:
         return FiniteAutomaton(q, sigma, delta, q0, f)
 
     def compute_type(self):
+        """Function to compute the type of the grammar based on the Chomsky hierarchy."""
         is_type_2 = True
         is_type_3_right = True
         is_type_3_left = True
