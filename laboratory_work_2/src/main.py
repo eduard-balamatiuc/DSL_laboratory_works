@@ -1,6 +1,7 @@
 from grammar import Grammar
 
 def main():
+    # Example usage:
     VN = {'S', 'P', 'Q'}
     VT = {'a', 'b', 'c', 'd', 'e', 'f'}
     P = {
@@ -10,7 +11,7 @@ def main():
     }
     S = 'S'
     grammar = Grammar(VN, VT, P, S)
-    print(grammar.compute_type())
+    print(grammar)
 
 if __name__ == "__main__":
     main()    
