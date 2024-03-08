@@ -1,3 +1,6 @@
+from graphviz import Digraph
+
+
 class FiniteAutomaton:
     def __init__(self, q, sigma, delta, q0, f):
         self.q = q
@@ -52,7 +55,7 @@ class FiniteAutomaton:
 
         while unexplored:
             current_state_set = unexplored.pop()
-            for input_symbol in self.sigma:
+            for input_symbol in sorted(self.sigma):
                 # Find all NFA states reachable from the current state set under the input symbol
                 next_states = set()
                 for state in current_state_set:
@@ -96,3 +99,24 @@ class FiniteAutomaton:
                 return False
                 
         return True
+    
+    def visualize(self):
+        dot = Digraph()
+
+        # Add states
+        for state in self.q:
+            if state in self.f:
+                dot.node(state, shape='doublecircle')
+            else:
+                dot.node(state, shape='circle')
+
+        # Mark the initial state
+        dot.node('', shape='none')
+        dot.edge('', self.q0)
+
+        # Add edges
+        for src, transitions in self.delta.items():
+            for input_symbol, dest in transitions:
+                dot.edge(src, dest, label=input_symbol)
+
+        return dot
