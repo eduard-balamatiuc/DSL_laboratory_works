@@ -5,6 +5,10 @@ class FiniteAutomaton:
         self.delta = delta
         self.q0 = q0
         self.f = f
+
+    def __str__(self):
+        """Printable representation of the Finite Automaton"""
+        return f"Finite Automaton: q={self.q}, sigma={self.sigma}, delta={self.delta}, q0={self.q0}, f={self.f}"
     
     def string_belong_to_language(self, inputString):
         currentState = self.q0
