@@ -21,6 +21,7 @@ F = {q2},
 
 class TestToRegularGrammar(unittest.TestCase):
     def test_to_regular_grammar_based_on_first_lab(self):
+        """Test of regular grammar generation based on the first lab's example."""
         q={"S", "Q", "P"}
         sigma={"e", "a", "b", "d", "f", "c"}
         delta={
@@ -50,6 +51,7 @@ class TestToRegularGrammar(unittest.TestCase):
         self.assertEqual(test_finite_automaton.to_regular_grammar(), expected_grammar.to_dict())
 
     def test_to_regular_grammar_based_on_second_lab(self):
+        """Test of regular grammar generation based on the second lab's example."""
         q = {"0", "1", "2", "3"}
         sigma = {"a", "c", "b"}
         delta = {
@@ -83,6 +85,7 @@ class TestToRegularGrammar(unittest.TestCase):
 
 class TestIsDeterministic(unittest.TestCase):
     def test_is_deterministic_based_on_first_lab(self):
+        """Test check of the finite automaton type based on the first lab's example."""
         q={"S", "Q", "P"}
         sigma={"e", "a", "b", "d", "f", "c"}
         delta={
@@ -102,6 +105,7 @@ class TestIsDeterministic(unittest.TestCase):
         self.assertTrue(test_finite_automaton.is_deterministic())
 
     def test_is_deterministic_based_on_second_lab(self):
+        """Test check of the finite automaton type based on the second lab's example."""
         q = {"0", "1", "2", "3"}
         sigma = {"a", "c", "b"}
         delta = {
@@ -124,6 +128,7 @@ class TestIsDeterministic(unittest.TestCase):
 
 class TestToDfa(unittest.TestCase):
     def test_to_dfa_based_on_first_lab(self):
+        """Test of conversion to deterministic finite automaton based on the first lab's example."""
         q={"S", "Q", "P"}
         sigma={"e", "a", "b", "d", "f", "c"}
         delta={
@@ -143,6 +148,7 @@ class TestToDfa(unittest.TestCase):
         self.assertEqual(test_finite_automaton.to_dfa(), test_finite_automaton)
 
     def test_to_dfa_based_on_second_lab(self):
+        """Test of conversion to deterministic finite automaton based on the second lab's example."""
         q = {"0", "1", "2", "3"}
         sigma = {"a", "c", "b"}
         delta = {
@@ -178,6 +184,7 @@ class TestToDfa(unittest.TestCase):
 
 class TestVisualize(unittest.TestCase):
     def test_visualize_based_on_first_lab(self):
+        """Test of visualization of the finite automaton based on the first lab's example."""
         q={"S", "Q", "P"}
         sigma={"e", "a", "b", "d", "f", "c"}
         delta={
@@ -199,6 +206,7 @@ class TestVisualize(unittest.TestCase):
         self.assertTrue(os.path.exists('test-output/finite_automaton_lab_1.png'))
 
     def test_visualize_based_on_second_lab(self):
+        """Test of visualization of the finite automaton based on the second lab's example."""
         q = {"0", "1", "2", "3"}
         sigma = {"a", "c", "b"}
         delta = {

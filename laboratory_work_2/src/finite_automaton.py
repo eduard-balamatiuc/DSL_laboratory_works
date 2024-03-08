@@ -14,6 +14,7 @@ class FiniteAutomaton:
         return f"Finite Automaton: q={self.q}, sigma={self.sigma}, delta={self.delta}, q0={self.q0}, f={self.f}"
     
     def string_belong_to_language(self, inputString):
+        """Method for checking if a string belongs to the language of the finite automaton."""
         currentState = self.q0
         for c in inputString:
             if c not in self.sigma:
@@ -44,6 +45,7 @@ class FiniteAutomaton:
         return grammar_dict
     
     def to_dfa(self):
+        """Method for converting the finite automaton to a deterministic finite automaton."""
         if self.is_deterministic():
             return self
         
@@ -101,6 +103,7 @@ class FiniteAutomaton:
         return True
     
     def visualize(self):
+        """Method for visualizing the finite automaton."""
         dot = Digraph()
 
         # Add states
