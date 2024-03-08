@@ -174,5 +174,50 @@ class TestToDfa(unittest.TestCase):
         self.assertEqual(test_finite_automaton.to_dfa().to_dict(), expcted_finite_automaton.to_dict())
 
 
+class TestVisualize(unittest.TestCase):
+    def test_visualize_based_on_first_lab(self):
+        q={"S", "Q", "P"}
+        sigma={"e", "a", "b", "d", "f", "c"}
+        delta={
+            "S": [("a", "P"), ("b", "Q")],
+            "P": [("b", "P"), ("c", "P"), ("d", "Q"), ("e","END")],
+            "Q": [("e", "Q"), ("f", "Q"), ("a","END")]
+        }
+        q0="S"
+        f=["e", "a"]
+        test_finite_automaton = FiniteAutomaton(
+            q=q,
+            sigma=sigma,
+            delta=delta,
+            q0=q0,
+            f=f,
+        )
+        dot = test_finite_automaton.visualize()
+        dot.render('test-output/finite_automaton_lab_1', format='png', cleanup=True)
+        self.assertTrue(True)
+
+    def test_visualize_based_on_second_lab(self):
+        q = {"0", "1", "2", "3"}
+        sigma = {"a", "c", "b"}
+        delta = {
+            "0": [("a", "0"), ("a", "1")],
+            "1": [("c", "1"), ("b", "2")],
+            "2": [("b", "3")],
+            "3": [("a", "1")]
+        }
+        q0 = "0"
+        f = ["2"]
+        test_finite_automaton = FiniteAutomaton(
+            q=q,
+            sigma=sigma,
+            delta=delta,
+            q0=q0,
+            f=f,
+        )
+        dot = test_finite_automaton.visualize()
+        dot.render('test-output/finite_automaton_lab_2', format='png', cleanup=True)
+        self.assertTrue(True)
+
+
 if __name__=="__main__":
     unittest.main()
