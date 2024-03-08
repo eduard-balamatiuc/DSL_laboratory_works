@@ -83,3 +83,13 @@ class Grammar:
             return GrammarTypology.CONTEXT_FREE_GRAMMAR.value
         
         return GrammarTypology.CONTEXT_SENSITIVE_GRAMMAR.value
+    
+    def to_dict(self) -> dict:
+        """Method to export the Grammar to a dictionary format."""
+        grammar_dict = {
+            "VN": self.VN,
+            "VT": self.VT,
+            "P": self.P,
+            "S": self.S,
+        }
+        return grammar_dict
