@@ -96,22 +96,3 @@ class FiniteAutomaton:
                 return False
                 
         return True
-    
-q = {"0", "1", "2", "3"}
-sigma = {"a", "c", "b"}
-delta = {
-    "0": [("a", "0"), ("a", "1")],
-    "1": [("c", "1"), ("b", "2")],
-    "2": [("b", "3")],
-    "3": [("a", "1")]
-}
-q0 = "0"
-f = ["2"]
-test_finite_automaton = FiniteAutomaton(
-    q=q,
-    sigma=sigma,
-    delta=delta,
-    q0=q0,
-    f=f,
-)
-print(test_finite_automaton.to_dfa())
