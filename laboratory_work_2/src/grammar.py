@@ -16,18 +16,18 @@ class GrammarTypology(str, Enum):
 
 class Grammar:
     """Class representing a generalised grammar."""
-    def __init__(self, VN, VT, P, S="S"):
+    def __init__(self, VN, VT, P, S="S") -> None:
         self.VN = VN
         self.VT = VT
         self.P = P
         self.S = S
         self.type = self.compute_type()  # Compute the grammar type during initialization
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Printable representation of the grammar."""
         return f"{self.type} grammar: VN={self.VN}, VT={self.VT}, P={self.P}, S={self.S}"
 
-    def generate_string(self):
+    def generate_string(self) -> str:
         """Generates a random string from the grammar."""
         string = self.S
         while any(v in string for v in self.VN):
@@ -36,7 +36,7 @@ class Grammar:
                     string = string.replace(v, random.choice(self.P[v]), 1)
         return string
 
-    def to_finite_automaton(self):
+    def to_finite_automaton(self) -> FiniteAutomaton:
         """Function to convert a grammar to a finite automaton."""
         q = self.VN
         sigma = self.VT
@@ -48,38 +48,38 @@ class Grammar:
         f = [item for item in values if len(set(self.P.keys())-set(item)) == len(set(self.P.keys()))]
         return FiniteAutomaton(q, sigma, delta, q0, f)
 
-    def compute_type(self):
-        """Function to compute the type of the grammar based on the Chomsky hierarchy."""
-        is_type_2 = True
-        is_type_3_right = True
-        is_type_3_left = True
+    def compute_type(self) -> str:
+        """Computes the type of the grammar and returns it as a string value from GrammarTypology enum."""
+        is_context_free, is_right_linear, is_left_linear, is_regular = True, False, False, True
 
-        for left_keys, right_values in self.P.items():
-            if len(left_keys) > 1:
-                return GrammarTypology.RECURSIVELY_ENUMERABLE_GRAMMAR.value
-
-            for right_value in right_values:
-                # Context-sensitive check (any rule where the length of the right_value is less than the left_keys)
-                if len(right_value) < len(left_keys):
+        for key, productions in self.P.items():
+            for production in productions:
+                # Checking for RECURSIVELY_ENUMERABLE_GRAMMAR conditions.
+                if len(key) > len(production) or (len(key) > 1 and any(char in self.VN for char in key)):
                     return GrammarTypology.RECURSIVELY_ENUMERABLE_GRAMMAR.value
 
-                # Context-free check
-                if any(char in self.VN for char in right_value[1:]):
-                    is_type_2 = False
+                # Checking if not context-free or regular.
+                if len(key) != 1 or key not in self.VN:
+                    is_context_free, is_regular = False, False
 
-                # Right-linear check
-                if not (len(right_value) == 1 and right_value[-1] in self.VT) and not (right_value[-1] in self.VN and all(char in self.VT for char in right_value[:-1])):
-                    is_type_3_right = False
-                
-                # Left-linear check
-                if not (len(right_value) == 1 and right_value[0] in self.VT) and not (right_value[0] in self.VN and all(char in self.VT for char in right_value[1:])):
-                    is_type_3_left = False
+                # Further checks if it's still considered regular.
+                if is_regular:
+                    if all(symbol in self.VT for symbol in production):
+                        continue  # Still possibly right or left linear.
+                    elif production[-1] in self.VN and all(symbol in self.VT for symbol in production[:-1]):
+                        is_right_linear = True
+                    elif production[0] in self.VN and all(symbol in self.VT for symbol in production[1:]):
+                        is_left_linear = True
+                    else:
+                        is_regular = False
 
-        if is_type_2:
+        # Determining the specific grammar type based on flags.
+        if is_regular:
+            if is_right_linear and not is_left_linear:
+                return GrammarTypology.RIGHT_LINEAR_GRAMMAR.value
+            elif is_left_linear and not is_right_linear:
+                return GrammarTypology.LEFT_LINEAR_GRAMMAR.value
+        if is_context_free:
             return GrammarTypology.CONTEXT_FREE_GRAMMAR.value
-        if is_type_3_right:
-            return GrammarTypology.RIGHT_LINEAR_GRAMMAR.value
-        if is_type_3_left:
-            return GrammarTypology.LEFT_LINEAR_GRAMMAR.value
-
+        
         return GrammarTypology.CONTEXT_SENSITIVE_GRAMMAR.value
