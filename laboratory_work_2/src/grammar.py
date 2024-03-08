@@ -19,6 +19,9 @@ class Grammar:
         self.S = S
         self.type = self.compute_type()  # Compute the grammar type during initialization
 
+    def __str__(self):
+        return f"{self.type} grammar: VN={self.VN}, VT={self.VT}, P={self.P}, S={self.S}"
+
     def generate_string(self):
         string = self.S
         while any(v in string for v in self.VN):
