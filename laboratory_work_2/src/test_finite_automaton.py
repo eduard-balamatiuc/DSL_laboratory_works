@@ -1,6 +1,8 @@
+import os
 import unittest
 from finite_automaton import FiniteAutomaton
 from grammar import Grammar
+
 
 
 """
@@ -194,7 +196,7 @@ class TestVisualize(unittest.TestCase):
         )
         dot = test_finite_automaton.visualize()
         dot.render('test-output/finite_automaton_lab_1', format='png', cleanup=True)
-        self.assertTrue(True)
+        self.assertTrue(os.path.exists('test-output/finite_automaton_lab_1.png'))
 
     def test_visualize_based_on_second_lab(self):
         q = {"0", "1", "2", "3"}
@@ -216,7 +218,7 @@ class TestVisualize(unittest.TestCase):
         )
         dot = test_finite_automaton.visualize()
         dot.render('test-output/finite_automaton_lab_2', format='png', cleanup=True)
-        self.assertTrue(True)
+        self.assertTrue(os.path.exists('test-output/finite_automaton_lab_2.png'))
 
 
 if __name__=="__main__":
