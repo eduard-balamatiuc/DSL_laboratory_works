@@ -2,8 +2,23 @@ import unittest
 from finite_automaton import FiniteAutomaton
 from grammar import Grammar
 
+
+"""
+Variant 1
+Q = {q0,q1,q2,q3},
+∑ = {a,c,b},
+F = {q2},
+δ(q0,a) = q0,
+δ(q0,a) = q1,
+δ(q1,c) = q1,
+δ(q1,b) = q2,
+δ(q2,b) = q3,
+δ(q3,a) = q1.
+"""
+
+
 class TestToRegularGrammar(unittest.TestCase):
-    def test_to_regular_grammar(self):
+    def test_to_regular_grammar_based_on_first_lab(self):
         q={"S", "Q", "P"}
         sigma={"e", "a", "b", "d", "f", "c"}
         delta={
