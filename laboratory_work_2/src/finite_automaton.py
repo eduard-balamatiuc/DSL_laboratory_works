@@ -39,7 +39,46 @@ class FiniteAutomaton:
             "S": S,
         }
         return grammar_dict
- 
+    
+    def to_dfa(self):
+        if self.is_deterministic():
+            return self
+        
+        new_states = {frozenset([self.q0]): self.q0}  # Mapping from NFA state sets to DFA state names
+        new_delta = {}
+        dfa_start_state = frozenset([self.q0])
+        unexplored = [dfa_start_state]
+        dfa_final_states = set()
+
+        while unexplored:
+            current_state_set = unexplored.pop()
+            for input_symbol in self.sigma:
+                # Find all NFA states reachable from the current state set under the input symbol
+                next_states = set()
+                for state in current_state_set:
+                    transitions = self.delta.get(state, [])
+                    for symbol, next_state in transitions:
+                        if symbol == input_symbol:
+                            next_states.add(next_state)
+
+                if next_states:
+                    next_state_set = frozenset(next_states)
+                    if next_state_set not in new_states:
+                        new_states[next_state_set] = str(len(new_states))
+                        unexplored.append(next_state_set)
+                    # Record the transition in the DFA
+                    new_delta.setdefault(new_states[current_state_set], []).append((input_symbol, new_states[next_state_set]))
+
+            # Check if the current state set includes any NFA final states
+            if any(state in self.f for state in current_state_set):
+                dfa_final_states.add(new_states[current_state_set])
+
+        # Convert set of states back to a list format for compatibility
+        new_q = set(new_states.values())
+        new_f = list(dfa_final_states)
+
+        return FiniteAutomaton(new_q, self.sigma, new_delta, new_states[dfa_start_state], new_f)
+        
     def to_dict(self):
         """Method for exporting the finite automaton to a dictionary format."""
         return {
