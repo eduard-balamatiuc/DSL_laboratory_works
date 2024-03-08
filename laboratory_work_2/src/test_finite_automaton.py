@@ -47,6 +47,36 @@ class TestToRegularGrammar(unittest.TestCase):
         )
         self.assertEqual(test_finite_automaton.to_regular_grammar(), expected_grammar.to_dict())
 
+    def test_to_regular_grammar_based_on_second_lab(self):
+        q = {"0", "1", "2", "3"}
+        sigma = {"a", "c", "b"}
+        delta = {
+            "0": [("a", "0"), ("a", "1")],
+            "1": [("c", "1"), ("b", "2")],
+            "2": [("b", "3")],
+            "3": [("a", "1")]
+        }
+        q0 = "0"
+        f = ["2"]
+        test_finite_automaton = FiniteAutomaton(
+            q=q,
+            sigma=sigma,
+            delta=delta,
+            q0=q0,
+            f=f,
+        )
+        expected_grammar = Grammar(
+            VN={"0", "1", "2", "3"},
+            VT={"a", "c", "b"},
+            P={
+                "0": ["a0", "a1"],
+                "1": ["c1", "b2"],
+                "2": ["b3"],
+                "3": ["a1"]
+            },
+            S="0"
+        )
+        self.assertEqual(test_finite_automaton.to_regular_grammar(), expected_grammar.to_dict())
 
 
 if __name__=="__main__":
