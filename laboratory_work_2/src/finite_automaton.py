@@ -23,3 +23,19 @@ class FiniteAutomaton:
                     else:
                         currentState = transition[0]
         return currentState in self.f
+    
+    def to_regular_grammar(self):
+        """Method for converting the finite automaton to a regular grammar."""
+        VN = self.q
+        VT = self.sigma
+        P = {}
+        for key in self.delta.keys():
+            P[key] = [item[0] if len(item) == 1 else "".join(item) for item in self.delta[key]]
+        S = self.q0
+        grammar_dict = {
+            "VN": VN,
+            "VT": VT,
+            "P": P,
+            "S": S,
+        }
+        return grammar_dict
