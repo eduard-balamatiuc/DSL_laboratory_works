@@ -39,3 +39,11 @@ class FiniteAutomaton:
             "S": S,
         }
         return grammar_dict
+    
+    def is_deterministic(self):
+        """Method that checks if the finite automaton is deterministic."""
+        for transition in self.delta.values():
+            if len(set([item[0] for item in transition])) != len(transition):
+                return False
+                
+        return True
