@@ -87,8 +87,6 @@ class Grammar:
             self.P[node_with_empty] = [production for production in self.P[node_with_empty] if production != ""]
 
 
-
-
     def normalize_to_chomsky_normal_form(self):
         """Method to normalize to Chomsky Normal Form."""
         self.start_symbol_check()
