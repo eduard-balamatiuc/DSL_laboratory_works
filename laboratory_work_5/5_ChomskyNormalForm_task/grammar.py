@@ -86,12 +86,34 @@ class Grammar:
                             self.P[v].extend(new_productions)
             self.P[node_with_empty] = [production for production in self.P[node_with_empty] if production != ""]
 
+    def compute_unit_productions(self):
+        """Method to compute unit productions."""
+        unit_productions = {v for v in self.VN if any(len(p) == 1 and p in self.VN for p in self.P[v])}
+        return unit_productions
+
+    def remove_unit_productions(self):
+        """Method to remove unit productions from the grammar."""
+        while self.compute_unit_productions():
+            # replace the unit productions identified to the right side of the productions
+            unit_productions = self.compute_unit_productions()
+            for key in unit_productions:
+                for production in self.P[key]:
+                    if len(production) == 1 and production in self.VN:
+                        self.P[key].remove(production)
+                        self.P[key].extend(self.P[production])
+
 
     def normalize_to_chomsky_normal_form(self):
         """Method to normalize to Chomsky Normal Form."""
         self.start_symbol_check()
+        print("Start Symbol Check:")
+        print(self.to_dict())
         self.remove_null_productions()
-        # self._eliminate_renaming()
+        print("Remove Null Productions:")
+        print(self.to_dict())
+        self.remove_unit_productions()
+        print("Remove Unit Productions:")
+        print(self.to_dict())
         # self._eliminate_inaccessible_symbols()
         # self._eliminate_non_productive_symbols()
         # self._convert_to_chomsky_normal_form()
