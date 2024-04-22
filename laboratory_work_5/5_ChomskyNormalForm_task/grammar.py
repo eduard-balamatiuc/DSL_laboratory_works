@@ -33,6 +33,44 @@ class Grammar:
             self.P[new_start] = [self.S]
             self.S = new_start
 
+    def replace_all_combinations(self, value, node):
+        """Method that given a possible value and a node, removes the node from the value in all possibl combinations
+        and returns the new values.
+        
+        replace_all_combinations("ABC", "B") -> ["AC"]
+        replace_all_combinations("ABA", "A") -> ["AB", "B", "BA]
+        replace_all_combinations("AB", "C") -> ["AB"]
+        replace_all_combinations("ABABAB", "B") -> ["AABAB", "ABAAB", "ABABA", "AAAB", "ABAA", "AABA", "AAA"]
+        replace_all_combinations("ABBAB", "B") -> ["ABAB", "AAB", "ABBA", "AA"]
+        """
+        if node not in value:
+            # If the node is not in the value, return the original value in a list
+            return [value]
+        
+        results = set()  # Using a set to avoid duplicate entries
+
+        # Recursive function to generate combinations by removing the node
+        def generate_combinations(current, start):
+            # Loop through the string and try removing the node at each position
+            for i in range(start, len(current)):
+                if current.startswith(node, i):
+                    # Remove the node and recursively call with the new string
+                    new_combination = current[:i] + current[i + len(node):]
+                    if new_combination not in results:
+                        results.add(new_combination)
+                        generate_combinations(new_combination, i)
+
+        # Start generating combinations from the initial value
+        generate_combinations(value, 0)
+
+        # Convert the set to a list and ensure the original value is removed
+        result_list = list(results)
+
+        if value in result_list:
+            result_list.remove(value)
+
+        return result_list
+
 
     def normalize_to_chomsky_normal_form(self):
         """Method to normalize to Chomsky Normal Form."""
@@ -55,6 +93,9 @@ if __name__ == "__main__":
         "E": ["aB"],
         "D": ["abC"]
     }
+
+
+
     grammar = Grammar(VN, VT, P)
     print("Original Grammar:")
     print(grammar.to_dict())
