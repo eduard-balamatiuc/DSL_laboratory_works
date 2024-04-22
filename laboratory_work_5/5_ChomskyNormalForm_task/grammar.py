@@ -71,6 +71,23 @@ class Grammar:
 
         return result_list
 
+    def remove_null_productions(self):
+        """Method to eliminate ε productions from the grammar."""
+        nullable = {v for v in self.VN if "" in self.P[v]}
+        
+        for node_with_empty in nullable:
+            for v in self.VN:
+                for production in self.P[v]:
+                    if node_with_empty in production:
+                        if production == node_with_empty:
+                            nullable.add(v)
+                        else:
+                            new_productions = self.replace_all_combinations(production, node_with_empty)
+                            self.P[v].extend(new_productions)
+            self.P[node_with_empty] = [production for production in self.P[node_with_empty] if production != ""]
+
+
+
 
     def normalize_to_chomsky_normal_form(self):
         """Method to normalize to Chomsky Normal Form."""
