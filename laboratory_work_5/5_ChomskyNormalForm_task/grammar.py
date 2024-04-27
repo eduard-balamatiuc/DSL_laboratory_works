@@ -102,6 +102,30 @@ class Grammar:
                         self.P[key].remove(production)
                         self.P[key].extend(self.P[production])
 
+    def remove_two_or_more_symbols(self):
+        """Method to remove productions with more than 2 symbols."""
+        # extract violating productions
+        violating_productions = {v: [p for p in self.P[v] if len(p) > 2] for v in self.P}
+        # create a new state in which you store the last two values of the violating productions
+        # for 'S' -> 'ABC' you would have 'S' -> 'AX' and 'X' -> 'BC'
+        # but check if a state with the same last two values already exists, if yes, use it instead
+        new_productions = defaultdict(list)
+        for v in violating_productions:
+            for production in violating_productions[v]:
+                last_two = production[-2:]
+                if last_two not in new_productions:
+                    new_state = f"{v}*"
+                    self.VN.add(new_state)
+                    new_productions[last_two].append(new_state)
+                    self.P[new_state] = [last_two]
+        # replace the violating productions with the new productions
+        for production in new_productions:
+            for v in self.P:
+                for p in self.P[v]:
+                    if (p[-2:] == production) and (len(p) > 2):
+                        self.P[v].remove(p)
+                        p = p[:-2] + new_productions[production][0]
+                        self.P[v].append(p)
 
     def normalize_to_chomsky_normal_form(self):
         """Method to normalize to Chomsky Normal Form."""
@@ -114,9 +138,9 @@ class Grammar:
         self.remove_unit_productions()
         print("Remove Unit Productions:")
         print(self.to_dict())
-        # self._eliminate_inaccessible_symbols()
-        # self._eliminate_non_productive_symbols()
-        # self._convert_to_chomsky_normal_form()
+        self.remove_two_or_more_symbols()
+        print("Remove Two or More Symbols:")
+        print(self.to_dict())
 
 if __name__ == "__main__":
     # Example usage
@@ -138,5 +162,4 @@ if __name__ == "__main__":
     print(grammar.to_dict())
 
     grammar.normalize_to_chomsky_normal_form()
-    print("Chomsky Normal Form:")
-    print(grammar.to_dict())
+
