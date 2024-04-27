@@ -26,7 +26,8 @@ class Grammar:
     
     def start_symbol_check(self):
         """Method to check if the start symbol occurs on some right side of the productions.
-        If it does, a new start symbol is created."""
+        If it does, a new start symbol is created.
+        """
         if self.S in "".join([element for value_list in self.P.values() for element in value_list]):
             new_start = f"{self.S}'"
             self.VN.add(new_start)
@@ -36,12 +37,6 @@ class Grammar:
     def replace_all_combinations(self, value, node):
         """Method that given a possible value and a node, removes the node from the value in all possibl combinations
         and returns the new values.
-        
-        replace_all_combinations("ABC", "B") -> ["AC"]
-        replace_all_combinations("ABA", "A") -> ["AB", "B", "BA]
-        replace_all_combinations("AB", "C") -> ["AB"]
-        replace_all_combinations("ABABAB", "B") -> ["AABAB", "ABAAB", "ABABA", "AAAB", "ABAA", "AABA", "AAA"]
-        replace_all_combinations("ABBAB", "B") -> ["ABAB", "AAB", "ABBA", "AA"]
         """
         if node not in value:
             # If the node is not in the value, return the original value in a list
@@ -106,9 +101,6 @@ class Grammar:
         """Method to remove productions with more than 2 symbols."""
         # extract violating productions
         violating_productions = {v: [p for p in self.P[v] if len(p) > 2] for v in self.P}
-        # create a new state in which you store the last two values of the violating productions
-        # for 'S' -> 'ABC' you would have 'S' -> 'AX' and 'X' -> 'BC'
-        # but check if a state with the same last two values already exists, if yes, use it instead
         new_productions = defaultdict(list)
         for v in violating_productions:
             for production in violating_productions[v]:
