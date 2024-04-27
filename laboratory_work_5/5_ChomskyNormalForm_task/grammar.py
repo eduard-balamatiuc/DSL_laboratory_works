@@ -127,19 +127,39 @@ class Grammar:
                         p = p[:-2] + new_productions[production][0]
                         self.P[v].append(p)
 
+    def remove_terminal_and_variable_productions(self):
+        """Method to remove terminal and variable productions."""
+        # fina all terminal symbols to be replaced
+        states_to_iterate = [key for key in self.P.keys()]
+        for v in states_to_iterate:
+            for i, production in enumerate(self.P[v]):
+                if (len(production) > 1) and (production.upper() != production) and (production.lower() != production):
+                    for symbol in production:
+                        if symbol in self.VT:
+                            new_state = f"{symbol}*"
+                            if new_state not in self.VN:
+                                self.VN.add(new_state)
+                                self.P[new_state] = [symbol]
+                            self.P[v][i] = production.replace(symbol, new_state)
+
+        print(self.P)
+
     def normalize_to_chomsky_normal_form(self):
         """Method to normalize to Chomsky Normal Form."""
-        self.start_symbol_check()
         print("Start Symbol Check:")
+        self.start_symbol_check()
         print(self.to_dict())
-        self.remove_null_productions()
         print("Remove Null Productions:")
+        self.remove_null_productions()
         print(self.to_dict())
-        self.remove_unit_productions()
         print("Remove Unit Productions:")
+        self.remove_unit_productions()
         print(self.to_dict())
-        self.remove_two_or_more_symbols()
         print("Remove Two or More Symbols:")
+        self.remove_two_or_more_symbols()
+        print(self.to_dict())
+        print("Remove Terminal and Variable Productions:")
+        self.remove_terminal_and_variable_productions()
         print(self.to_dict())
 
 if __name__ == "__main__":
