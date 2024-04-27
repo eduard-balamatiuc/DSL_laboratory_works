@@ -142,25 +142,18 @@ class Grammar:
                                 self.P[new_state] = [symbol]
                             self.P[v][i] = production.replace(symbol, new_state)
 
-        print(self.P)
-
     def normalize_to_chomsky_normal_form(self):
         """Method to normalize to Chomsky Normal Form."""
         print("Start Symbol Check:")
         self.start_symbol_check()
-        print(self.to_dict())
         print("Remove Null Productions:")
         self.remove_null_productions()
-        print(self.to_dict())
         print("Remove Unit Productions:")
         self.remove_unit_productions()
-        print(self.to_dict())
         print("Remove Two or More Symbols:")
         self.remove_two_or_more_symbols()
-        print(self.to_dict())
         print("Remove Terminal and Variable Productions:")
         self.remove_terminal_and_variable_productions()
-        print(self.to_dict())
 
 if __name__ == "__main__":
     # Example usage
@@ -174,8 +167,6 @@ if __name__ == "__main__":
         "E": ["aB"],
         "D": ["abC"]
     }
-
-
 
     grammar = Grammar(VN, VT, P)
     print("Original Grammar:")
