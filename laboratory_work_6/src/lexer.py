@@ -1,90 +1,56 @@
+import re
 from tokenner import Tokenner, TokenType
 
 class Lexer:
     def __init__(self, text):
         self.text = text
         self.pos = 0
-        self.current_char = self.set_current_char()
-        
+        self.tokens = []
+        self.tokenize()
+
     def __str__(self):
         """String representation of the class instance."""
         return f"Lexer({self.text})"
-    
+
     def __repr__(self):
         """String representation of the class instance."""
         return self.__str__()
-    
-    def set_current_char(self):
-        """Set the `current_char` variable."""
-        if self.pos > len(self.text) - 1:
-            return None
-        else:
-            return self.text[self.pos]
 
-    def advance(self):
-        """Advance the `pos` pointer and set the `current_char` variable."""
-        self.pos += 1
-        self.current_char = self.set_current_char()
-
-    def skip_whitespace(self):
-        """Skip whitespaces in the text."""
-        while self.current_char is not None and self.current_char.isspace():
-            self.advance()
-
-    def integer(self):
-        """Return a (multidigit) integer consumed from the input."""
-        result = ""
-        while self.current_char is not None and self.current_char.isdigit():
-            result += self.current_char
-            self.advance()
-        return int(result)
-    
-    def get_next_token(self):
-        """Lexical analyzer (also known as scanner or tokenizer)"""
-        while self.current_char is not None:
-            if self.current_char.isspace():
-                self.skip_whitespace()
-                continue
-
-            elif self.current_char.isdigit():
-                return Tokenner(TokenType.INTEGER, self.integer())
-
-            elif self.current_char == "+":
-                self.advance()
-                return Tokenner(TokenType.PLUS, "+")
-
-            elif self.current_char == "-":
-                self.advance()
-                return Tokenner(TokenType.MINUS, "-")
-
-            elif self.current_char == "*":
-                self.advance()
-                return Tokenner(TokenType.MUL, "*")
-
-            elif self.current_char == "/":
-                self.advance()
-                return Tokenner(TokenType.DIV, "/")
-
-            elif self.current_char == "(":
-                self.advance()
-                return Tokenner(TokenType.LPAREN, "(")
-
-            elif self.current_char == ")":
-                self.advance()
-                return Tokenner(TokenType.RPAREN, ")")
-
-            else:
-                unknown = self.current_char
-                self.advance()
-                return Tokenner(TokenType.UNKNOWN, unknown)
-
-        return Tokenner(TokenType.EOF, None)
-    
     def tokenize(self):
-        """Return a list of tokens from the text."""
-        tokens = []
-        while (token := self.get_next_token()).type != TokenType.EOF:
-            tokens.append(token)
-        tokens.append(token)
-        return tokens
-   
+        """Tokenize the entire input text using regular expressions."""
+        token_specification = [
+            ('INTEGER',   r'\d+'),            # Integer
+            ('PLUS',      r'\+'),             # Plus sign
+            ('MINUS',     r'-'),              # Minus sign
+            ('MUL',       r'\*'),             # Multiplication sign
+            ('DIV',       r'\/'),             # Division sign
+            ('LPAREN',    r'\('),             # Left Parenthesis
+            ('RPAREN',    r'\)'),             # Right Parenthesis
+            ('WHITESPACE', r'\s+'),           # Whitespace
+            ('UNKNOWN',   r'.'),              # Any other character
+        ]
+        tok_regex = '|'.join('(?P<%s>%s)' % pair for pair in token_specification)
+        for mo in re.finditer(tok_regex, self.text):
+            kind = mo.lastgroup
+            value = mo.group()
+            if kind == 'WHITESPACE':
+                continue
+            elif kind == 'INTEGER':
+                value = int(value)
+            elif kind == 'UNKNOWN':
+                raise Exception(f'Unexpected character: {value}')
+            self.tokens.append(Tokenner(TokenType[kind], value))
+        self.tokens.append(Tokenner(TokenType.EOF, None))
+
+    def get_next_token(self):
+        """Return the next token from the token list."""
+        if self.pos < len(self.tokens):
+            token = self.tokens[self.pos]
+            self.pos += 1
+            return token
+        else:
+            return Tokenner(TokenType.EOF, None)
+
+# Example usage
+lexer = Lexer("3 + 4 * (2 - 1) / 2")
+print(lexer.tokens)
