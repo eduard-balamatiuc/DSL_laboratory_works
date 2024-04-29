@@ -93,4 +93,5 @@ class Parser:
         return node
 
     def parse(self):
+        """Parse the input text."""
         return self.expr()
